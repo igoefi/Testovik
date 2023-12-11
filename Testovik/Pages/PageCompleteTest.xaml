@@ -9,6 +9,100 @@
       Title="PageCompleteTest">
 
     <Grid>
-        
+        <StackPanel Name="stcpSelectTest"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="Visible">
+            <TextBlock Text="Тег теста"/>
+            <TextBox Name="txblTestTag"
+                            Height="20"
+                            Width="300"/>
+            <Button Content="Начать тест"
+                    Margin="0,20,0,0"
+                    Click="btnClickStartTest"/>
+        </StackPanel>
+
+        <GroupBox x:Name="grpbxTest"
+                  Visibility="Hidden">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="143*"/>
+                    <RowDefinition Height="244*"/>
+                    <RowDefinition Height="56*"/>
+                </Grid.RowDefinitions>
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Text="sdfsdmbcvmsdbfvvvvvvvvvvvvvvvvvvvvvn"
+                           Margin="0,20,0,0"
+                           FontSize="30"
+                           TextWrapping="Wrap"
+                           Width="600"
+                           TextAlignment="Center"/>
+
+                <ScrollViewer Grid.Row="1">
+                    <DataGrid Name="GridTest"
+                      Style="{StaticResource IndicatorsDataGridStyle}"
+                      CellStyle="{StaticResource CellStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="30">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <RadioButton
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Height="50"
+                                            Margin="0,15,0,0"
+                                            FontFamily="{Binding Name}"
+                                            Checked="btnChecked"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Border 
+                                            Name="BtnRealTime"
+                                            Background="Transparent"
+                                            Height="50"
+                                            BorderThickness="1"
+                                            BorderBrush="#A3A3a3"
+                                            Margin="0,15,0,0">
+                                                <Grid>
+                                                    <TextBlock
+                                                    FontFamily="Inter"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="14"
+                                                    Text="{Binding Name}"
+                                                    Margin="10,0,0,0"/>
+                                                </Grid>
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ScrollViewer>
+                
+                <Button x:Name="btnNextQuestion"
+                    Click="btnClickNextQuestion"
+                        Grid.Row="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Height="30"
+                        Width="200"
+                        Content="Следующий вопрос"
+                        Margin="20,0,0,0"/>
+                <TextBlock x:Name="txbQuestionCount"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Grid.Row="2"
+                           Text="sdfsdfsdfsd"
+                           Margin="0,0,10,0"
+                           FontSize="20"/>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Page>
