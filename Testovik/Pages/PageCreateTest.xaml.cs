@@ -12,6 +12,7 @@ namespace Testovik.Pages
     public partial class PageCreateTest : Page
     {
         private Test _test;
+
         private int _lastQuestionIndex = 0;
         private int _lastAnswerIndex = 0;
 
@@ -31,6 +32,16 @@ namespace Testovik.Pages
             BtnClickBack(null, null);
         }
 
+        private void btnClickAddQuestion(object sender, RoutedEventArgs e)
+        {
+            _test.Questions.Add("question");
+            _test.Answers.Add(new List<string>() { "answer" });
+
+            UpdateSources();
+            cmbBoxQuestions.SelectedIndex = _test.Questions.Count - 1;
+            cmbBoxAnwsers.SelectedIndex = 0;
+        }
+
         private void btnClickAddAnswer(object sender, RoutedEventArgs e)
         {
             var index = FindQuestionIndex();
@@ -38,15 +49,6 @@ namespace Testovik.Pages
 
             UpdateSources();
             cmbBoxAnwsers.SelectedIndex = _test.Answers[FindQuestionIndex()].Count - 1;
-        }
-
-        private void btnClickAddQuestion(object sender, RoutedEventArgs e)
-        {
-            _test.Questions.Add("question");
-            _test.Answers.Add(new List<string>() { "answer" });
-
-            cmbBoxQuestions.SelectedIndex = _test.Questions.Count - 1;
-            UpdateSources();
         }
 
         private void CmbBoxQuestionChanged(object sender, SelectionChangedEventArgs e) =>
@@ -58,33 +60,32 @@ namespace Testovik.Pages
 
         private void SetQuestionText()
         {
-            SetAnswerText(_lastQuestionIndex);
-            var index = FindQuestionIndex();
             _test.Questions[_lastQuestionIndex] = txbQuestion.Text;
-            txbQuestion.Text = _test.Questions[index];
+            _test.Answers[_lastQuestionIndex][_lastAnswerIndex] = txbAnswer.Text;
 
             UpdateSources();
+            txbQuestion.Text = _test.Questions[FindQuestionIndex()];
+            txbAnswer.Text = _test.Answers[FindQuestionIndex()][0];
+            cmbBoxAnwsers.SelectedIndex = 0;
+
+            _lastQuestionIndex = FindQuestionIndex();
+            _lastAnswerIndex = 0;
         }
 
-        private void SetAnswerText(int questionIndex = -1)
+        private void SetAnswerText()
         {
-            if(questionIndex == -1)
-                questionIndex = FindQuestionIndex();
-            _test.Answers[questionIndex][_lastAnswerIndex] = txbAnswer.Text;
-            txbAnswer.Text = _test.Answers[FindQuestionIndex(out int indexA)][indexA];
+            _test.Answers[FindQuestionIndex()][_lastAnswerIndex == -1 ? 0 : _lastQuestionIndex] = txbAnswer.Text;
 
             UpdateSources();
+            txbAnswer.Text = _test.Answers[FindQuestionIndex(out int indexA)][indexA];
+            _lastAnswerIndex = cmbBoxAnwsers.SelectedIndex;
         }
 
         private void btnClickDeleteAnswer(object sender, RoutedEventArgs e)
         {
-            if (_test.Answers.Count <= 1)
-                return;
-
             _test.Answers[FindQuestionIndex(out int indexA)].RemoveAt(indexA);
-            _lastAnswerIndex = 0;
-
             UpdateSources();
+            cmbBoxAnwsers.SelectedIndex = 0;
         }
 
         private void btnClickDeleteQuestion(object sender, RoutedEventArgs e)
@@ -97,39 +98,23 @@ namespace Testovik.Pages
             _test.Answers.RemoveAt(index);
 
             UpdateSources();
+            cmbBoxQuestions.SelectedIndex = 0;
+            cmbBoxAnwsers.SelectedIndex = 0;
         }
 
-        private int FindQuestionIndex()
-        {
-            var text = cmbBoxQuestions.Text;
-            for (int i = 0; i < _test.Questions.Count; i++)
-                if (_test.Questions[i] == text)
-                    return i;
-            return -1;
-        }
+        private int FindQuestionIndex() =>
+            cmbBoxQuestions.SelectedIndex == -1 ? 0 : cmbBoxQuestions.SelectedIndex;
 
         private int FindQuestionIndex(out int indexAnswer)
         {
-            var index = -1;
-            indexAnswer = -1;
-
-            var text = cmbBoxQuestions.Text;
-            for (int i = 0; i < _test.Questions.Count; i++)
-                if (_test.Questions[i] == text)
-                    index = i;
-
-            for (int i = 0; i < _test.Answers[index].Count; i++)
-                if (_test.Answers[index][i] == cmbBoxAnwsers.Text)
-                    indexAnswer = i;
-
-            return index;
+            indexAnswer = cmbBoxAnwsers.SelectedIndex == -1 ? 0 : cmbBoxAnwsers.SelectedIndex;
+            return cmbBoxQuestions.SelectedIndex == -1 ? 0 : cmbBoxQuestions.SelectedIndex;
         }
 
         private void UpdateSources()
         {
-            cmbBoxQuestions.ItemsSource = _test.Questions;
-
-            cmbBoxAnwsers.ItemsSource = _test.Answers[_lastQuestionIndex];
+            cmbBoxQuestions.ItemsSource = _test.Questions.ToArray();
+            cmbBoxAnwsers.ItemsSource = _test.Answers[FindQuestionIndex()].ToArray();
         }
     }
 }
